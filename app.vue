@@ -2,7 +2,6 @@
   <div>
     <v-btn v-if="!user?.id" color="primary" elevation="2" @click="loginMe"> Login </v-btn>
     <div v-else>
-      Hello {{ user?.id }}
       <v-btn color="primary" elevation="2" @click="logout"> Logout </v-btn>
       <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
       <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
@@ -23,8 +22,9 @@
 </template>
 
 <script lang="ts" setup>
-import { Ulid, Uuid4 } from 'id128';
 import { Database } from 'types/database';
+
+const { $uuid } = useNuxtApp();
 
 type Workers = Awaited<ReturnType<typeof getWorkers>>;
 
@@ -68,7 +68,7 @@ const createWorker = async () => {
   if (user.value) {
     const { data, error } = await supabase.from('workers').insert([
       {
-        id: Uuid4.construct(Ulid.generate().bytes).toCanonical(),
+        id: $uuid(),
         first_name: workerFirstName.value,
         last_name: workerLastName.value,
         manager_id: user.value.id,

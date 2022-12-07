@@ -7,8 +7,7 @@
       <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
       <v-btn color="primary" elevation="2" @click="createWorker"> Create worker </v-btn>
 
-      <v-btn color="primary" elevation="2" @click="getWorkers"> Get worker </v-btn>
-      <div v-for="worker in state.workers">
+      <div v-for="worker in workers">
         <div>{{ worker.id }}</div>
         <div>{{ worker.manager_id }}</div>
         <div>{{ worker.first_name }}</div>
@@ -26,43 +25,39 @@ import { Database } from 'types/database';
 
 const { $uuid } = useNuxtApp();
 
-type Workers = Awaited<ReturnType<typeof getWorkers>>;
-
 const supabase = useSupabaseClient<Database>();
 const client = useSupabaseAuthClient();
 const user = useSupabaseUser();
-
-const state: {
-  workers: Workers;
-} = reactive({
-  workers: [],
-});
 
 const loginMe = async () => {
   let { data, error } = await client.auth.signInWithPassword({
     email: 'test@test.com',
     password: '123456',
   });
-
-  if (!error) {
-    user.value = data.user;
-
-    return data.user;
-  }
-
-  return null;
 };
 
 const logout = async () => {
   let { error } = await client.auth.signOut();
-
-  if (!error) {
-    user.value = null;
-  }
 };
 
 const workerFirstName = ref('');
 const workerLastName = ref('');
+
+const { data: workers, refresh: refreshWorkers } = await useAsyncData(
+  'workers',
+  async () => {
+    if (user.value) {
+      const { data, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
+
+      if (!error) {
+        return data;
+      }
+    }
+
+    return null;
+  },
+  { watch: [user] }
+);
 
 const createWorker = async () => {
   if (user.value) {
@@ -75,21 +70,13 @@ const createWorker = async () => {
       },
     ]);
 
-    console.log(data, error);
-  }
-};
-
-const getWorkers = async () => {
-  if (user.value) {
-    let { data: workers, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
-
     if (!error) {
-      state.workers = workers;
+      refreshWorkers();
 
-      return workers;
+      return data;
     }
-  }
 
-  return null;
+    return null;
+  }
 };
 </script>

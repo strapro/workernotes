@@ -14,6 +14,7 @@
     "supabase": "^1.17.4"
   },
   "dependencies": {
+    "@mdi/font": "^7.0.96",
     "@nuxtjs/supabase": "^0.3.0",
     "id128": "^1.6.6",
     "sass": "^1.56.1",

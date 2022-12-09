@@ -76,5 +76,6 @@ const createWorker = async () => {
 
 definePageMeta({
   middleware: 'auth',
+  layout: 'app',
 });
 </script>

@@ -1,21 +1,18 @@
 <template>
   <div>
-    <v-btn v-if="!user?.id" color="primary" elevation="2" @click="loginMe"> Login </v-btn>
-    <div v-else>
-      <v-btn color="primary" elevation="2" @click="logout"> Logout </v-btn>
-      <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
-      <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
-      <v-btn color="primary" elevation="2" @click="createWorker"> Create worker </v-btn>
+    <v-btn color="primary" elevation="2" @click="logout"> Logout </v-btn>
+    <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
+    <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
+    <v-btn color="primary" elevation="2" @click="createWorker"> Create worker </v-btn>
 
-      <div v-for="worker in workers">
-        <div>{{ worker.id }}</div>
-        <div>{{ worker.manager_id }}</div>
-        <div>{{ worker.first_name }}</div>
-        <div>{{ worker.last_name }}</div>
-        <div>{{ worker.created_at }}</div>
-        <div>{{ worker.updated_at }}</div>
-        <br /><br />
-      </div>
+    <div v-for="worker in workers">
+      <div>{{ worker.id }}</div>
+      <div>{{ worker.manager_id }}</div>
+      <div>{{ worker.first_name }}</div>
+      <div>{{ worker.last_name }}</div>
+      <div>{{ worker.created_at }}</div>
+      <div>{{ worker.updated_at }}</div>
+      <br /><br />
     </div>
   </div>
 </template>
@@ -29,15 +26,12 @@ const supabase = useSupabaseClient<Database>();
 const client = useSupabaseAuthClient();
 const user = useSupabaseUser();
 
-const loginMe = async () => {
-  let { data, error } = await client.auth.signInWithPassword({
-    email: 'test@test.com',
-    password: '123456',
-  });
-};
-
 const logout = async () => {
   let { error } = await client.auth.signOut();
+
+  if (!error) {
+    navigateTo('/login');
+  }
 };
 
 const workerFirstName = ref('');
@@ -79,4 +73,8 @@ const createWorker = async () => {
     return null;
   }
 };
+
+definePageMeta({
+  middleware: 'auth',
+});
 </script>

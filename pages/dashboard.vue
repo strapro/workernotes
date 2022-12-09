@@ -1,6 +1,5 @@
 <template>
   <div>
-    <v-btn color="primary" elevation="2" @click="logout"> Logout </v-btn>
     <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
     <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
     <v-btn color="primary" elevation="2" @click="createWorker"> Create worker </v-btn>
@@ -23,16 +22,8 @@ import { Database } from 'types/database';
 const { $uuid } = useNuxtApp();
 
 const supabase = useSupabaseClient<Database>();
-const client = useSupabaseAuthClient();
+
 const user = useSupabaseUser();
-
-const logout = async () => {
-  let { error } = await client.auth.signOut();
-
-  if (!error) {
-    navigateTo('/login');
-  }
-};
 
 const workerFirstName = ref('');
 const workerLastName = ref('');

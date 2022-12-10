@@ -11,7 +11,7 @@
     </v-app-bar>
 
     <v-main>
-      <slot />
+      <v-container> <slot /></v-container>
     </v-main>
   </v-app>
 </template>

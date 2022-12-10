@@ -1,69 +1,29 @@
 <template>
   <div>
-    <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
-    <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
-    <v-btn color="primary" elevation="2" @click="createWorker"> Create worker </v-btn>
-
-    <div v-for="worker in workers">
-      <div>{{ worker.id }}</div>
-      <div>{{ worker.manager_id }}</div>
-      <div>{{ worker.first_name }}</div>
-      <div>{{ worker.last_name }}</div>
-      <div>{{ worker.created_at }}</div>
-      <div>{{ worker.updated_at }}</div>
-      <br /><br />
-    </div>
+    <v-row>
+      <v-col v-for="worker in workers" cols="4"><DashboardWorkerWidget :worker="worker" /></v-col>
+      <v-col cols="4"><DashboardWorkerCreateWidget @worker-created="refreshWorkers" /></v-col>
+    </v-row>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Database } from 'types/database';
 
-const { $uuid } = useNuxtApp();
-
 const supabase = useSupabaseClient<Database>();
-
 const user = useSupabaseUser();
 
-const workerFirstName = ref('');
-const workerLastName = ref('');
-
-const { data: workers, refresh: refreshWorkers } = await useAsyncData(
-  'workers',
-  async () => {
-    if (user.value) {
-      const { data, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
-
-      if (!error) {
-        return data;
-      }
-    }
-
-    return null;
-  },
-  { watch: [user] }
-);
-
-const createWorker = async () => {
+const { data: workers, refresh: refreshWorkers } = await useAsyncData('workers', async () => {
   if (user.value) {
-    const { data, error } = await supabase.from('workers').insert([
-      {
-        id: $uuid(),
-        first_name: workerFirstName.value,
-        last_name: workerLastName.value,
-        manager_id: user.value.id,
-      },
-    ]);
+    const { data, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
 
     if (!error) {
-      refreshWorkers();
-
       return data;
     }
-
-    return null;
   }
-};
+
+  return null;
+});
 
 definePageMeta({
   middleware: 'auth',

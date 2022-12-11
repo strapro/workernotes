@@ -1,3 +1,11 @@
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json }
+  | Json[]
+
 export interface Database {
   public: {
     Tables: {
@@ -55,6 +63,7 @@ export interface Database {
           manager_id: string | null
           created_at: string | null
           updated_at: string | null
+          profile_pic: string | null
         }
         Insert: {
           id: string
@@ -63,6 +72,7 @@ export interface Database {
           manager_id?: string | null
           created_at?: string | null
           updated_at?: string | null
+          profile_pic?: string | null
         }
         Update: {
           id?: string
@@ -71,6 +81,7 @@ export interface Database {
           manager_id?: string | null
           created_at?: string | null
           updated_at?: string | null
+          profile_pic?: string | null
         }
       }
     }

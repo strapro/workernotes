@@ -1,12 +1,19 @@
 <template>
   <v-card class="mx-auto">
-    <v-img height="150" src="no-pic.png"></v-img>
+    <v-img height="150" :src="imageUrl"></v-img>
 
     <v-card-title>New Worker</v-card-title>
 
     <v-card-text>
-      <v-text-field label="Worker first name" v-model="workerFirstName"></v-text-field>
-      <v-text-field label="Worker last name" v-model="workerLastName"></v-text-field>
+      <v-file-input
+        prepend-icon=""
+        label="Profile pic"
+        v-model="image"
+        accept="image/png, image/jpeg, image/bmp"
+        @change="onFileChange"
+      />
+      <v-text-field label="Worker first name" v-model="workerFirstName" />
+      <v-text-field label="Worker last name" v-model="workerLastName" />
     </v-card-text>
 
     <v-divider class="mx-4"></v-divider>
@@ -40,6 +47,7 @@ const createWorker = async () => {
         first_name: workerFirstName.value,
         last_name: workerLastName.value,
         manager_id: user.value.id,
+        profile_pic: await uploadProfilePic(),
       },
     ]);
 
@@ -51,5 +59,43 @@ const createWorker = async () => {
 
     return null;
   }
+};
+
+const uploadProfilePic = async () => {
+  let profilePicData = null;
+
+  if (image && Array.isArray(image.value)) {
+    const extension = image.value[0].name.split('.').pop();
+
+    const { data, error } = await supabase.storage
+      .from('worker-profile-pics')
+      .upload(`${$uuid()}.${extension}`, image.value[0], {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (!error) {
+      profilePicData = data.path;
+    }
+  }
+
+  return profilePicData;
+};
+
+const image = ref();
+const imageUrl = ref('no-pic.png');
+
+const onFileChange = () => {
+  if (!image || !Array.isArray(image.value)) {
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    imageUrl.value = e?.target?.result as string;
+  };
+
+  reader.readAsDataURL(image.value[0]);
 };
 </script>

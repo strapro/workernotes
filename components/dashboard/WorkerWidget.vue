@@ -1,6 +1,6 @@
 <template>
   <v-card class="mx-auto">
-    <v-img height="150" src="no-pic.png"></v-img>
+    <v-img height="150" :src="profilePic"></v-img>
 
     <v-card-title>{{ worker.first_name }} {{ worker.last_name }}</v-card-title>
 
@@ -19,7 +19,13 @@ import { Database } from 'types/database';
 
 type Worker = Database['public']['Tables']['workers']['Row'];
 
-defineProps<{
+const props = defineProps<{
   worker: Worker;
 }>();
+
+const supabase = useSupabaseClient<Database>();
+
+const profilePic = props.worker.profile_pic
+  ? supabase.storage.from('worker-profile-pics').getPublicUrl(props.worker.profile_pic).data.publicUrl
+  : 'no-pic.png';
 </script>

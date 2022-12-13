@@ -1,8 +1,10 @@
 <template>
   <v-card class="mx-auto">
-    <v-img height="150" :src="profilePic"></v-img>
+    <NuxtLink :to="`/workers/${worker.id}`"><v-img height="150" :src="profilePic"></v-img></NuxtLink>
 
-    <v-card-title>{{ worker.first_name }} {{ worker.last_name }}</v-card-title>
+    <v-card-title>
+      <NuxtLink :to="`/workers/${worker.id}`">{{ worker.first_name }} {{ worker.last_name }}</NuxtLink>
+    </v-card-title>
 
     <v-card-text>
       <v-textarea v-model="note" auto-grow variant="filled" color="deep-purple" label="Note" rows="1"></v-textarea>
@@ -40,7 +42,7 @@ const profilePic = props.worker.profile_pic
 
 const note = ref('');
 
-const createNote = async (sentiment: Number) => {
+const createNote = async (sentiment: number) => {
   const { data, error } = await supabase.from('worker_notes').insert([
     {
       id: $uuid(),

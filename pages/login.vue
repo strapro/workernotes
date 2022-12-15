@@ -1,7 +1,7 @@
 <template>
   <v-sheet class="login-container d-flex align-center justify-center">
     <div>
-      <v-img src="logo.png" />
+      <v-img src="/logo.png" />
       <v-card width="400">
         <v-card-text>
           <v-form>

@@ -1,6 +1,6 @@
 <template>
   <v-sheet v-if="worker" elevation="1">
-    <v-img height="150" :src="$workerProfilePic(worker.profile_pic)"></v-img>
+    <v-img height="150" :src="$workerPicPuclicUrl(worker.profile_pic)"></v-img>
 
     <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
 
@@ -54,7 +54,6 @@ const [{ data: worker, refresh: refreshWorker }, { data: notes, refresh: refresh
     return null;
   }),
 ]);
-
 
 definePageMeta({
   middleware: 'auth',

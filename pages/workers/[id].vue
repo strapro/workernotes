@@ -1,6 +1,6 @@
 <template>
   <v-sheet v-if="worker" elevation="1">
-    <v-img height="150" :src="profilePic"></v-img>
+    <v-img height="150" :src="$workerProfilePic(worker.profile_pic)"></v-img>
 
     <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
 
@@ -55,10 +55,6 @@ const [{ data: worker, refresh: refreshWorker }, { data: notes, refresh: refresh
   }),
 ]);
 
-const profilePic =
-  worker.value && worker.value.profile_pic
-    ? supabase.storage.from('worker-profile-pics').getPublicUrl(worker.value.profile_pic).data.publicUrl
-    : 'no-pic.png';
 
 definePageMeta({
   middleware: 'auth',

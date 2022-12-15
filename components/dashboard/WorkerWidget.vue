@@ -1,6 +1,8 @@
 <template>
   <v-card class="mx-auto">
-    <NuxtLink :to="`/workers/${worker.id}`"><v-img height="150" :src="profilePic"></v-img></NuxtLink>
+    <NuxtLink :to="`/workers/${worker.id}`">
+      <v-img height="150" :src="$workerPicPuclicUrl(worker.profile_pic)"></v-img>
+    </NuxtLink>
 
     <v-card-title>
       <NuxtLink :to="`/workers/${worker.id}`">{{ worker.first_name }} {{ worker.last_name }}</NuxtLink>
@@ -35,10 +37,6 @@ const emit = defineEmits<{
 const supabase = useSupabaseClient<Database>();
 
 const { $uuid } = useNuxtApp();
-
-const profilePic = props.worker.profile_pic
-  ? supabase.storage.from('worker-profile-pics').getPublicUrl(props.worker.profile_pic).data.publicUrl
-  : 'no-pic.png';
 
 const note = ref('');
 

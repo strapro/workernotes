@@ -1,6 +1,9 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer v-model="drawer" app> </v-navigation-drawer>
+    <v-navigation-drawer v-model="drawer" app>
+      <LayoutLogo />
+      <LayoutMenu />
+    </v-navigation-drawer>
 
     <v-app-bar app>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
@@ -19,3 +22,11 @@
 <script lang="ts" setup>
 const drawer = ref(true);
 </script>
+
+<style lang="scss">
+.logo-link {
+  img {
+    margin-top: -7px;
+  }
+}
+</style>

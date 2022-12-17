@@ -4,14 +4,17 @@
 
     <h3>{{ worker.first_name }} {{ worker.last_name }}</h3>
 
-    <h4>Notes</h4>
-    <ul v-if="notes">
-      <li v-for="note in notes">
-        <span>Note: {{ note.note }}</span>
-        <span>Sentiment: {{ note.sentiment }}</span>
-        <span>Created at: {{ note.created_at }}</span>
-      </li>
-    </ul>
+    <v-timeline side="end" density="comfortable">
+      <v-timeline-item v-for="note in notes" size="large" dot-color="#FFF">
+        <template v-slot:icon>
+          <v-icon :icon="note.sentiment! > 0 ? 'mdi-thumb-up-outline' : 'mdi-thumb-down-outline'"></v-icon>
+        </template>
+        <template v-slot:opposite>
+          <span>{{ $dayjs(note.created_at).format('DD/MM/YYYY') }}</span>
+        </template>
+        <div>{{ note.note }}</div>
+      </v-timeline-item>
+    </v-timeline>
   </v-sheet>
 </template>
 

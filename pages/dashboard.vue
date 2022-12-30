@@ -17,9 +17,14 @@ const { data: workers, refresh: refreshWorkers } = await useAsyncData('workers',
   if (user.value) {
     const { data, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
 
-    if (!error) {
-      return data;
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        fatal: true,
+      });
     }
+
+    return data
   }
 
   return null;

@@ -28,33 +28,35 @@ const route = useRoute();
 
 const [{ data: worker, refresh: refreshWorker }, { data: notes, refresh: refreshNotes }] = await Promise.all([
   useAsyncData(`worker-${route.params.id}`, async () => {
-    if (user.value) {
-      const { data, error } = await supabase.from('workers').select('*').eq('id', route.params.id).single();
+    const { data, error } = await supabase.from('workers').select('*').eq('id', route.params.id).single();
 
-      if (!data) {
-        throw createError({
-          statusCode: 404,
-          fatal: true,
-        });
-      }
-
-      if (!error) {
-        return data;
-      }
+    if (!data) {
+      throw createError({
+        statusCode: 404,
+        fatal: true,
+      });
     }
 
-    return null;
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        fatal: true,
+      });
+    }
+
+    return data;
   }),
   useAsyncData('notes-${route.params.id}', async () => {
-    if (user.value) {
-      const { data, error } = await supabase.from('worker_notes').select('*').eq('worker_id', route.params.id);
+    const { data, error } = await supabase.from('worker_notes').select('*').eq('worker_id', route.params.id);
 
-      if (!error) {
-        return data;
-      }
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        fatal: true,
+      });
     }
 
-    return null;
+    return data;
   }),
 ]);
 

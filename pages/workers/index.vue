@@ -27,13 +27,18 @@ const headers: Header[] = [
   { text: 'Actions', value: 'actions', width: 100 },
 ];
 
-const { data: workers, refresh: refreshWorkers } = await useAsyncData('workers', async () => {
+const { data: workers } = await useAsyncData('workers', async () => {
   if (user.value) {
     const { data, error } = await supabase.from('workers').select('*').eq('manager_id', user.value.id);
 
-    if (!error) {
-      return data;
+    if (error) {
+      throw createError({
+        statusCode: 500,
+        fatal: true,
+      });
     }
+
+    return data;
   }
 
   return null;

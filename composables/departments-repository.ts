@@ -8,9 +8,9 @@ export const useDepartmentsRepository = () => {
   const supabase = useSupabaseClient<Database>();
 
   return {
-    getByManagerId: async (manager_id: string) => {
-      return await useAsyncData(`departments-by-manager-id-${manager_id}`, async () => {
-        const { data, error } = await supabase.from('departments').select('*').eq('manager_id', manager_id);
+    getByManagerId: async (managerId: string) => {
+      return await useAsyncData(`departments-by-manager-id-${managerId}`, async () => {
+        const { data, error } = await supabase.from('departments').select('*').eq('manager_id', managerId);
 
         if (error) {
           throw createError({
@@ -23,12 +23,12 @@ export const useDepartmentsRepository = () => {
         return data;
       });
     },
-    getByIdOrNew: async (id: string, manager_id: string) => {
+    getByIdOrNew: async (id: string, managerId: string) => {
       if (id === 'new') {
         return ref<Department>({
           id: $uuid(),
           name: '',
-          manager_id: manager_id,
+          manager_id: managerId,
           created_at: null,
           updated_at: null,
         });

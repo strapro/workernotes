@@ -10,66 +10,14 @@
 </template>
 
 <script lang="ts" setup>
-import { Database } from 'types/database';
-import { Ref } from 'vue';
-
-type Department = Database['public']['Tables']['departments']['Row'];
-
-const supabase = useSupabaseClient<Database>();
+const departmentsRepository = useDepartmentsRepository();
 const user = useSupabaseUser();
-
-const { $uuid } = useNuxtApp();
 const route = useRoute();
 
-const getDepartment = async () => {
-  if (route.params.id === 'new') {
-    return ref<Department>({
-      id: $uuid(),
-      name: '',
-      manager_id: user.value?.id!,
-      created_at: null,
-      updated_at: null,
-    });
-  } else {
-    const { data: department, error } = await useAsyncData(`department-${route.params.id}`, async () => {
-      const { data, error } = await supabase.from('departments').select('*').eq('id', route.params.id);
-
-      if (error) {
-        throw createError({
-          message: error.message,
-          statusCode: 500,
-          fatal: true,
-        });
-      }
-
-      if (data.length == 0) {
-        throw createError({
-          statusCode: 404,
-          fatal: true,
-        });
-      }
-
-      return data[0];
-    });
-
-    if (error.value) {
-      throw error.value;
-    }
-
-    return department as Ref<Department>;
-  }
-};
-
-const department = await getDepartment();
+const department = await departmentsRepository.getByIdOrNew(route.params.id as string, user.value?.id!);
 
 const onSubmit = async () => {
-  const { data, error } = await supabase.from('departments').upsert(department.value);
-
-  if (!error) {
-    navigateTo('/departments');
-  }
-
-  return null;
+  await departmentsRepository.upsert(department.value);
 };
 
 const onCancel = () => {

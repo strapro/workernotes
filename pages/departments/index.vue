@@ -6,7 +6,7 @@
     </v-col>
   </v-row>
   <v-sheet elevation="1">
-    <EasyDataTable :headers="headers" :items="workers" alternating>
+    <EasyDataTable :headers="headers" :items="departments" alternating>
       <template #item-actions="item">
         <v-btn :to="`/departments/${item.id}`" icon="mdi-magnify" size="x-small" class="my-2"></v-btn>
       </template>
@@ -15,28 +15,17 @@
 </template>
 
 <script lang="ts" setup>
-import { Database } from 'types/database';
 import type { Header } from 'vue3-easy-data-table';
 
-const supabase = useSupabaseClient<Database>();
+const departmentsRepository = useDepartmentsRepository();
 const user = useSupabaseUser();
+
+const { data: departments, refresh: refreshDepartments } = await departmentsRepository.getByManagerId(user.value?.id!);
 
 const headers: Header[] = [
   { text: 'Name', value: 'name' },
   { text: 'Actions', value: 'actions', width: 100 },
 ];
-
-const { data: workers, refresh: refreshWorkers } = await useAsyncData('departments', async () => {
-  if (user.value) {
-    const { data, error } = await supabase.from('departments').select('*').eq('manager_id', user.value.id);
-
-    if (!error) {
-      return data;
-    }
-  }
-
-  return null;
-});
 
 definePageMeta({
   middleware: 'auth',

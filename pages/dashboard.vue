@@ -8,13 +8,15 @@
           :department-level-name="departmentLevelsIndexed[worker.department_level_id!].name!"
         />
       </v-col>
-      <v-col cols="4">
-        <DashboardWorkerCreateWidget
-          :departments="departments!"
-          :department-levels="departmentLevels!"
-          @worker-created="refreshWorkers"
-        />
-      </v-col>
+      <client-only>
+        <v-col cols="4">
+          <DashboardWorkerCreateWidget
+            :departments="departments!"
+            :department-levels="departmentLevels!"
+            @worker-created="refreshWorkers"
+          />
+        </v-col>
+      </client-only>
     </v-row>
   </div>
 </template>

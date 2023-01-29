@@ -6,6 +6,7 @@
 
     <v-card-title>
       <NuxtLink :to="`/workers/${worker.id}`">{{ worker.first_name }} {{ worker.last_name }}</NuxtLink>
+      <div>{{ departmentName }}: {{ departmentLevelName }}</div>
     </v-card-title>
 
     <v-card-text>
@@ -28,6 +29,8 @@ type Worker = Database['public']['Tables']['workers']['Row'];
 
 const props = defineProps<{
   worker: Worker;
+  departmentName: string;
+  departmentLevelName: string;
 }>();
 
 const emit = defineEmits<{

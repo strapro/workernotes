@@ -14,6 +14,21 @@
       />
       <v-text-field label="Worker first name" v-model="workerFirstName" />
       <v-text-field label="Worker last name" v-model="workerLastName" />
+      <v-select
+        label="Department"
+        :items="departments"
+        item-title="name"
+        item-value="id"
+        v-model="workerDepartmentId"
+        @update:modelValue="onDepartmentChange"
+      ></v-select>
+      <v-select
+        label="Level"
+        :items="departmentLevels.filter((dl) => dl.department_id === workerDepartmentId)"
+        item-title="name"
+        item-value="id"
+        v-model="workerDepartmentLevelId"
+      ></v-select>
     </v-card-text>
 
     <v-divider class="mx-4"></v-divider>
@@ -27,6 +42,14 @@
 <script lang="ts" setup>
 import { Database } from 'types/database';
 
+type Department = Database['public']['Tables']['departments']['Row'];
+type DepartmentLevel = Database['public']['Tables']['department_levels']['Row'];
+
+const props = defineProps<{
+  departments: Array<Department>;
+  departmentLevels: Array<DepartmentLevel>;
+}>();
+
 const emit = defineEmits<{
   (e: 'workerCreated'): void;
 }>();
@@ -38,6 +61,8 @@ const { $uuid } = useNuxtApp();
 
 const workerFirstName = ref('');
 const workerLastName = ref('');
+const workerDepartmentId = ref(null);
+const workerDepartmentLevelId = ref(null);
 
 const createWorker = async () => {
   if (user.value) {
@@ -46,6 +71,8 @@ const createWorker = async () => {
         id: $uuid(),
         first_name: workerFirstName.value,
         last_name: workerLastName.value,
+        department_id: workerDepartmentId.value,
+        department_level_id: workerDepartmentLevelId.value,
         manager_id: user.value.id,
         profile_pic: await uploadProfilePic(),
       },
@@ -97,5 +124,9 @@ const onFileChange = () => {
   };
 
   reader.readAsDataURL(image.value[0]);
+};
+
+const onDepartmentChange = () => {
+  workerDepartmentLevelId.value = null;
 };
 </script>

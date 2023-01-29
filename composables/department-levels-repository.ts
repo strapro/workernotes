@@ -29,6 +29,24 @@ export const useDepartmentLevelsRepository = () => {
         return data;
       });
     },
+    getByManagerId: async (managerId: string) => {
+      return await useAsyncData(`department-levels-by-manager-id-${managerId}`, async () => {
+        const { data, error } = await supabase
+          .from('department_levels')
+          .select('*, departments!inner(id)')
+          .eq('departments.manager_id', managerId);
+
+        if (error) {
+          throw createError({
+            message: error.message,
+            statusCode: 500,
+            fatal: true,
+          });
+        }
+
+        return data;
+      });
+    },
     upsert: async (departmentLevel: DepartmentLevel | DepartmentLevel[]) => {
       const { data, error } = await supabase.from('department_levels').upsert(departmentLevel);
 

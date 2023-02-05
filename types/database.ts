@@ -9,6 +9,32 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
+      department_level_dimensions: {
+        Row: {
+          created_at: string | null
+          department_level_id: string | null
+          description: string | null
+          id: string
+          name: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          department_level_id?: string | null
+          description?: string | null
+          id: string
+          name?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          department_level_id?: string | null
+          description?: string | null
+          id?: string
+          name?: string | null
+          updated_at?: string | null
+        }
+      }
       department_levels: {
         Row: {
           created_at: string | null

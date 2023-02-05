@@ -12,7 +12,9 @@ export const useDepartmentLevelsRepository = () => {
         id: $uuid(),
         name: '',
         department_id: departmentID,
-      } as DepartmentLevel);
+        created_at: null,
+        updated_at: null,
+      });
     },
     getByDepartmentId: async (departmentId: string) => {
       return await useAsyncData(`department-levels-by-department-id-${departmentId}`, async () => {
@@ -44,7 +46,11 @@ export const useDepartmentLevelsRepository = () => {
           });
         }
 
-        return data;
+        return data.map((d) => {
+          const { departments, ...cleanD } = d;
+
+          return cleanD;
+        });
       });
     },
     upsert: async (departmentLevel: DepartmentLevel | DepartmentLevel[]) => {

@@ -135,4 +135,8 @@ definePageMeta({
   middleware: 'auth',
   layout: 'app',
 });
+
+useSeoMeta({
+  title: () => `Department ${department.value!.name}`,
+});
 </script>

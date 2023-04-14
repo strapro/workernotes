@@ -64,4 +64,8 @@ definePageMeta({
   middleware: 'auth',
   layout: 'app',
 });
+
+useSeoMeta({
+  title: () => `Worker ${worker.value!.first_name}`,
+});
 </script>

@@ -4,6 +4,7 @@ export default defineNuxtConfig({
     shim: false,
   },
   modules: ['@nuxtjs/supabase'],
+  extends: ['nuxt-seo-kit'],
   css: [
     '@mdi/font/css/materialdesignicons.min.css',
     'vuetify/lib/styles/main.sass',
